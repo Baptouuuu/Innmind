@@ -1,0 +1,4 @@
+innmind_app:
+    resource: "@InnmindAppBundle/Resources/config/routing.yml"
+    prefix:   /
+
