@@ -1,0 +1,8 @@
+FROM ubuntu:latest
+
+MAINTANER Baptiste Langlade
+
+RUN sudo apt-get update
+RUN sudo apt-get install php5 -y
+
+ADD ./ /var/www/innmind/
