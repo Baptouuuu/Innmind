@@ -1,0 +1,22 @@
+Innmind\AppBundle\Entity\Server:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [name, host]
+    properties:
+        type:
+            - Choice:
+                choices:
+                    - worker.crawler
+
+Innmind\AppBundle\Entity\ResourceToken:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: uuid
+    properties:
+        uri:
+            - Url: ~
+            - NotBlank: ~
+        referer:
+            - Url: ~
+        uuid:
+            - Regex:
+                pattern: '/^\w{8}-(\w{4}-){3}\w{12}$/'
