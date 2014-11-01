@@ -1,12 +1,26 @@
 security:
+    access_decision_manager:
+        strategy: unanimous
+
     providers:
-        in_memory:
-            memory: ~
+        server:
+            id: server_provider
 
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        default:
+        publication:
+            pattern: ^/api/publish.*
+            stateless: true
             anonymous: ~
+            server: true
+
+        default:
+            pattern: ^/
+            stateless: true
+            anonymous: ~
+
+    access_control:
+        - { path: ^/api/publish.*, roles: [ROLE_WORKER, ROLE_CRAWLER] }

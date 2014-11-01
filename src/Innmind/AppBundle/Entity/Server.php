@@ -3,12 +3,14 @@
 namespace Innmind\AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="server")
  */
-class Server
+class Server implements UserInterface
 {
     /**
      * @ORM\Id
@@ -35,7 +37,7 @@ class Server
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -58,7 +60,7 @@ class Server
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -81,7 +83,7 @@ class Server
     /**
      * Get host
      *
-     * @return string 
+     * @return string
      */
     public function getHost()
     {
@@ -104,10 +106,47 @@ class Server
     /**
      * Get type
      *
-     * @return string 
+     * @return string
      */
     public function getType()
     {
         return $this->type;
+    }
+
+    public function getRoles()
+    {
+        $parts = explode('.', $this->type);
+        $roles = [];
+
+        foreach ($parts as $part) {
+            $roles[] = 'ROLE_' . strtoupper($part);
+        }
+
+        return $roles;
+    }
+
+    public function getUsername()
+    {
+        return $this->getName();
+    }
+
+    public function getPassword()
+    {
+        return '';
+    }
+
+    public function getSalt()
+    {
+        return '';
+    }
+
+    public function getCredentials()
+    {
+        return '';
+    }
+
+    public function eraseCredentials()
+    {
+
     }
 }

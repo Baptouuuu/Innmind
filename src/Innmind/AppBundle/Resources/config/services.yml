@@ -1,3 +1,16 @@
 services:
-   uuid:
-       class: Innmind\AppBundle\UUID
+    uuid:
+        class: Innmind\AppBundle\UUID
+
+    server.security.authentication.provider:
+        class: Innmind\AppBundle\Security\Authentication\Provider\ServerProvider
+        arguments: [""]
+
+    server.security.authentication.listener:
+        class: Innmind\AppBundle\Security\Firewall\ServerListener
+        arguments: ["@security.context", "@security.authentication.manager"]
+
+    server_provider:
+        class: Innmind\AppBundle\Security\Server\ServerProvider
+        calls:
+            - ['setEntityManager', ['@doctrine.orm.entity_manager']]
