@@ -108,6 +108,16 @@ class ResourceToken
     }
 
     /**
+     * Check if a referer is set
+     *
+     * @return bool
+     */
+    public function hasReferer()
+    {
+        return (bool) $this->referer;
+    }
+
+    /**
      * Get referer
      *
      * @return string
