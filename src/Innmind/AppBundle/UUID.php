@@ -16,6 +16,6 @@ class UUID
      */
     public function generate()
     {
-        return RUuid::uuid4();
+        return (string) RUuid::uuid4();
     }
 }
