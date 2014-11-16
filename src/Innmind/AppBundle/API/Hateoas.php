@@ -40,7 +40,8 @@ class Hateoas
             'rel' => 'self',
             'href' => $this->generator->generate(
                 'api_node_get',
-                ['uuid' => $node['uuid']]
+                ['uuid' => $node['uuid']],
+                UrlGeneratorInterface::ABSOLUTE_URL
             )
         ];
 

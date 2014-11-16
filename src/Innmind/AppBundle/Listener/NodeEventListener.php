@@ -133,7 +133,9 @@ class NodeEventListener
                     );
                 } catch (\Exception $e) {
                     $data['publisher'] = $this->url->generate(
-                        'api_node_create'
+                        'api_node_create',
+                        [],
+                        UrlGeneratorInterface::ABSOLUTE_URL
                     );
                 }
 
