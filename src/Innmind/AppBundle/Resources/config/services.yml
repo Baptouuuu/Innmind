@@ -42,3 +42,8 @@ services:
         calls:
             - ['setGraph', ['@graph']]
             - ['setLabelGuesser', ['@node.label_guesser']]
+
+    api.hateoas:
+        class: Innmind\AppBundle\API\Hateoas
+        calls:
+            - ['setGenerator', ['@router']]
