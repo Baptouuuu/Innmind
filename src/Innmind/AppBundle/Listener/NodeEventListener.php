@@ -6,6 +6,7 @@ use Innmind\AppBundle\Graph\NodeEvent;
 use Innmind\AppBundle\UUID;
 use Innmind\AppBundle\RabbitMQ;
 use Innmind\AppBundle\Graph;
+use Innmind\AppBundle\Entity\ResourceToken;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
