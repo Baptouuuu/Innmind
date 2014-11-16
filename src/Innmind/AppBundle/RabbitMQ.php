@@ -2,6 +2,8 @@
 
 namespace Innmind\AppBundle;
 
+use OldSound\RabbitMqBundle\RabbitMq\Producer;
+
 /**
  * Old sound rabbitmq wrapper
  */
