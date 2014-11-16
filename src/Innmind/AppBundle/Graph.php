@@ -12,12 +12,14 @@ use Innmind\AppBundle\Graph\Exception\ZeroNodeFoundException;
 use Innmind\AppBundle\Graph\Exception\MoreThanOneNodeFoundException;
 use Innmind\AppBundle\Graph\NodeEvents;
 use Innmind\AppBundle\Graph\NodeEvent;
+use Psr\Log\LoggerInterface;
 
 class Graph
 {
     protected $client;
     protected $generator;
     protected $dispatcher;
+    protected $logger;
 
     /**
      * Set the neo4j client
@@ -53,6 +55,17 @@ class Graph
     }
 
     /**
+     * Set the logger
+     *
+     * @param LoggerInterface $logger
+     */
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
      * Create a new node in the graph with the specified data
      *
      * @param array $labels
@@ -84,6 +97,11 @@ class Graph
         $node->save();
 
         $this->dispatcher->dispatch(NodeEvents::POST_CREATE, $event);
+
+        $this->logger->info('Resource added to the graph', [
+            'uri' => $node->getProperty('uri'),
+            'uuid' => $node->getProperty('uuid'),
+        ]);
 
         return $node;
     }
@@ -205,6 +223,11 @@ class Graph
         $node->save();
 
         $this->dispatcher->dispatch(NodeEvents::POST_UPDATE, $event);
+
+        $this->logger->info('Resource updated in the graph', [
+            'uri' => $node->getProperty('uri'),
+            'uuid' => $node->getProperty('uuid'),
+        ]);
 
         return $node;
     }
