@@ -4,6 +4,7 @@ namespace Innmind\AppBundle\Graph;
 
 use Innmind\AppBundle\Graph as GraphWrapper;
 use Innmind\AppBundle\LabelGuesser;
+use Innmind\AppBundle\Graph\Exception\ZeroNodeFoundException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -52,10 +53,22 @@ class NodePublisher
         $labels = $this->labelGuesser->guess($request);
 
         if ($uuid === null) {
-            $node = $this->graph->createNode(
-                $labels,
-                $request->all()
-            );
+            try {
+                $existing = $this->graph->getNodeByProperty(
+                    'uri',
+                    $request->get('uri')
+                );
+                $this->graph->updateNode(
+                    $existing->getProperty('uuid'),
+                    $labels,
+                    $request->all()
+                );
+            } catch (ZeroNodeFoundException $e) {
+                $node = $this->graph->createNode(
+                    $labels,
+                    $request->all()
+                );
+            }
         } else {
             $node = $this->graph->updateNode(
                 $uuid,

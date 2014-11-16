@@ -63,31 +63,8 @@ class Graph
 
     public function createNode(array $labels, array $properties)
     {
-        $existing = $this->query(
-            'MATCH (n) WHERE n.uri = {uri} RETURN n',
-            ['uri' => $properties['uri']]
-        );
-
-        if ($existing->count() !== 0) {
-            $node = $existing[0]['n'];
-        } else {
-            $node = $this->client->makeNode();
-            $uuid = $this->generator->generate();
-            $exist = true;
-
-            while ($exist === true) {
-                try {
-                    $this->getNodeByUUID($uuid);
-                    $uuid = $this->generator->generate();
-                } catch (ZeroNodeFoundException $e) {
-                    $exist = false;
-                } catch (\Exception $e) {
-                    $uuid = $this->generator->generate();
-                }
-            }
-
-            $node->setProperty('uuid', $uuid);
-        }
+        $node = $this->client->makeNode();
+        $node->setProperty('uuid', $this->generator->generate());
 
         foreach ($properties as $property => $value) {
             $node->setProperty(strtolower($property), $value);
