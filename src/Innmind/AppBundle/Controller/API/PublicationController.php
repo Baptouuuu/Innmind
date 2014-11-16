@@ -23,39 +23,61 @@ class PublicationController extends Controller
             throw $this->createAccessDeniedException();
         }
 
-        $labels = $this->get('label_guesser')->guess($request->request);
-        $node = $this
-            ->get('graph')
-            ->createNode(
-                $labels,
-                $request->request->all()
-            );
+        $publisher = $this->get('node.publisher');
+        $referer = null;
 
         if ($provider->getToken()->hasReferer()) {
-            $referer = $this
-                ->get('graph')
-                ->getNodeByProperty(
-                    'uri',
-                    $provider->getToken()->getReferer()
-                );
-
-            $relation = $this
-                ->get('graph')
-                ->createRelation(
-                    $referer,
-                    $node
-                );
-            $relation
-                ->setType('REFER')
-                ->setProperty('weight', 1)
-                ->save();
+            $referer = $provider->getToken()->getReferer();
         }
+
+        $node = $publisher->save(
+            $request->request,
+            $referer
+        );
 
         $provider->clearToken();
 
         return new JsonResponse(
             $this
-                ->get('node_normalizer')
+                ->get('node.normalizer')
+                ->normalize($node)
+        );
+    }
+
+    /**
+     * Update an already exisiting node from the graph
+     *
+     */
+
+    public function updateAction(Request $request, $uuid)
+    {
+        $provider = $this->get('resource_token_provider');
+        $provider
+            ->setToken($request->headers->get('X-Token'))
+            ->setURI($request->headers->get('X-Resource'));
+
+        if (!$provider->hasToken()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $publisher = $this->get('node.publisher');
+        $referer = null;
+
+        if ($provider->getToken()->hasReferer()) {
+            $referer = $provider->getToken()->getReferer();
+        }
+
+        $node = $publisher->save(
+            $request->request,
+            $referer,
+            $uuid
+        );
+
+        $provider->clearToken();
+
+        return new JsonResponse(
+            $this
+                ->get('node.normalizer')
                 ->normalize($node)
         );
     }

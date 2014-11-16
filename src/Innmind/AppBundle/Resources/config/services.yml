@@ -20,7 +20,7 @@ services:
         calls:
             - ['setEntityManager', ['@doctrine.orm.entity_manager']]
 
-    label_guesser:
+    node.label_guesser:
         class: Innmind\AppBundle\LabelGuesser
 
     neo4j_client:
@@ -34,5 +34,11 @@ services:
             - ['setGenerator', ['@uuid']]
             - ['setDispatcher', ['@event_dispatcher']]
 
-    node_normalizer:
+    node.normalizer:
         class: Innmind\AppBundle\Normalization\NodeNormalizer
+
+    node.publisher:
+        class: Innmind\AppBundle\Graph\NodePublisher
+        calls:
+            - ['setGraph', ['@graph']]
+            - ['setLabelGuesser', ['@node.label_guesser']]
