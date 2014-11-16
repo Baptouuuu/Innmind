@@ -2,9 +2,10 @@
 
 namespace Innmind\AppBundle\Graph;
 
-use Everyman\Neo4j\Node
+use Everyman\Neo4j\Node;
+use Symfony\Component\EventDispatcher\Event;
 
-class NodeEvent
+class NodeEvent extends Event
 {
     protected $node;
     protected $labels;
