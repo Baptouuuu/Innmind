@@ -206,6 +206,12 @@ class Graph
     {
         $node = $this->getNodeByUUID($uuid);
 
+        foreach ($node->getProperties() as $property => $value) {
+            if (!in_array($property, ['updated_at', 'uuid'], true)) {
+                $node->removeProperty($property);
+            }
+        }
+
         foreach ($properties as $property => $value) {
             $node->setProperty($property, $value);
         }
