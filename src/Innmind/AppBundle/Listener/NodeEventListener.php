@@ -117,6 +117,10 @@ class NodeEventListener
                     'token' => $token->getUuid(),
                 ];
 
+                if (isset($node->language)) {
+                    $data['language'] = $node->getProperty('language');
+                }
+
                 try {
                     $existingNode = $this->graph->getNodeByProperty(
                         'uri',
