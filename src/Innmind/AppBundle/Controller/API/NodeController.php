@@ -5,6 +5,7 @@ namespace Innmind\AppBundle\Controller\API;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Innmind\AppBundle\Graph\Exception\ZeroNodeFoundException;
 
 class NodeController extends Controller
 {
@@ -14,7 +15,11 @@ class NodeController extends Controller
 
     public function getAction($uuid)
     {
-        $node = $this->get('graph')->getNodeByUUID($uuid);
+        try {
+            $node = $this->get('graph')->getNodeByUUID($uuid);
+        } catch (ZeroNodeFoundException $e) {
+            throw $this->createNotFoundException();
+        }
 
         $data = $this
             ->get('node.normalizer')
