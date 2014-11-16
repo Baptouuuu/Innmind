@@ -2,3 +2,4 @@ api_publish_create:
     path:     /api/publish/
     defaults: { _controller: InnmindAppBundle:API/Publication:create }
     methods: [POST]
+    condition: "request.headers.has('X-Token') and request.headers.has('X-Resource')"

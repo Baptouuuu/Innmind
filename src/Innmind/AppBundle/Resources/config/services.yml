@@ -14,3 +14,24 @@ services:
         class: Innmind\AppBundle\Security\Server\ServerProvider
         calls:
             - ['setEntityManager', ['@doctrine.orm.entity_manager']]
+
+    resource_token_provider:
+        class: Innmind\AppBundle\Provider\ResourceTokenProvider
+        calls:
+            - ['setEntityManager', ['@doctrine.orm.entity_manager']]
+
+    label_guesser:
+        class: Innmind\AppBundle\LabelGuesser
+
+    neo4j_client:
+        class: Everyman\Neo4j\Client
+        arguments: ['%neo4j_host%', '%neo4j_port%']
+
+    graph:
+        class: Innmind\AppBundle\Graph
+        calls:
+            - ['setClient', ['@neo4j_client']]
+            - ['setGenerator', ['@uuid']]
+
+    node_normalizer:
+        class: Innmind\AppBundle\Normalization\NodeNormalizer
