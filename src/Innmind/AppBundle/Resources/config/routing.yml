@@ -1,4 +1,4 @@
-api_node_update:
+api_node_get:
     path:     /api/node/{uuid}
     defaults: { _controller: InnmindAppBundle:API/Node:get }
     requirements:
