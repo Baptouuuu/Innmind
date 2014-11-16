@@ -16,11 +16,14 @@ class NodeController extends Controller
     {
         $node = $this->get('graph')->getNodeByUUID($uuid);
 
-        $response = new JsonResponse(
-            $this
-                ->get('node.normalizer')
-                ->normalize($node)
-        );
+        $data = $this
+            ->get('node.normalizer')
+            ->normalize($node);
+        $data = $this
+            ->get('api.hateoas')
+            ->handleNode($data);
+
+        $response = new JsonResponse($data);
 
         if (isset($node->{'last-modified'})) {
             $response->headers->set('Last-Modified', $node->getProperty('last-modified'));
