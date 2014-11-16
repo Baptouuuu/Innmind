@@ -91,15 +91,12 @@ class NodeEventListener
                 $toCrawl[] = $node->getProperty('canonical');
             }
 
-            if (isset($node->links)) {
-                foreach ($node->getProperty('links') as $link) {
-                    $toCrawl[] = $link;
-                }
-            }
-
-            if (isset($node->translations)) {
-                foreach ($node->getProperty('translations') as $link) {
-                    $toCrawl[] = $link;
+            foreach ($node->getProperties() as $property => $value) {
+                if (
+                    substr($property, 0, 5) === 'links' ||
+                    substr($property, 0, 12) === 'translations'
+                ) {
+                    $toCrawl[] = $value;
                 }
             }
 
