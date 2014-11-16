@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class PublicationController extends Controller
+class NodeController extends Controller
 {
     /**
      * Add a new resource to the graph

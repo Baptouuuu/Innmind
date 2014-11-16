@@ -1,12 +1,12 @@
-api_publish_create:
-    path:     /api/publish/
-    defaults: { _controller: InnmindAppBundle:API/Publication:create }
+api_node_create:
+    path:     /api/node/
+    defaults: { _controller: InnmindAppBundle:API/Node:create }
     methods: [POST]
     condition: "request.headers.has('X-Token') and request.headers.has('X-Resource')"
 
-api_publish_update:
-    path:     /api/publish/{uuid}
-    defaults: { _controller: InnmindAppBundle:API/Publication:update }
+api_node_update:
+    path:     /api/node/{uuid}
+    defaults: { _controller: InnmindAppBundle:API/Node:update }
     requirements:
         uuid: '\w{8}-(\w{4}-){3}\w{12}'
     methods: [PUT]
