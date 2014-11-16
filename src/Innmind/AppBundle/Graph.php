@@ -196,4 +196,39 @@ class Graph
             ->setEndNode($to)
             ->setProperty('uuid', $this->generator->generate());
     }
+
+    /**
+     * Put the properties to the node with the given uuid
+     *
+     * @param string $uuid
+     * @param array $labels
+     * @param array $properties
+     *
+     * @return Node
+     */
+
+    public function updateNode($uuid, array $labels, array $properties)
+    {
+        $node = $this->getNodeByUUID($uuid);
+
+        foreach ($properties as $property => $value) {
+            $node->setProperty($property, $value);
+        }
+
+        $l = [];
+        foreach ($labels as $label) {
+            $l[] = $this->client->makeLabel($label);
+        }
+
+        $node->addLabels($l);
+
+        $event = new NodeEvent($node, $labels, $properties);
+        $this->dispatcher->dispatch(NodeEvents::PRE_SAVE, $event);
+
+        $node->save();
+
+        $this->dispatcher->dispatch(NodeEvents::POST_SAVE, $event);
+
+        return $node;
+    }
 }
