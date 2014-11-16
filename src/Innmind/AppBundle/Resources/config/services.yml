@@ -47,3 +47,17 @@ services:
         class: Innmind\AppBundle\API\Hateoas
         calls:
             - ['setGenerator', ['@router']]
+
+    rabbit:
+        class: Innmind\AppBundle\RabbitMQ
+
+    graph.node.listener:
+        class: Innmind\AppBundle\Listener\NodeEventListener
+        calls:
+            - ['setRabbit', ['@rabbit']]
+            - ['setGenerator', ['@uuid']]
+            - ['setEntityManager', ['@doctrine.orm.entity_manager']]
+            - ['setGraph', ['@graph']]
+            - ['setUrlGenerator', ['@router']]
+        tags:
+            - { name: kernel.event_listener, event: graph.node.post_create, method: onPostCreate }
