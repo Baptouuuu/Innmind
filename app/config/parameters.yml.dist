@@ -19,5 +19,5 @@ parameters:
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisIsNotAVeryImportantTokenAsItsNeverUsed
 
-    neo4j_host: loalhost
+    neo4j_host: localhost
     neo4j_port: 7474
