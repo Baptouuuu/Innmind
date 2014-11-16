@@ -79,8 +79,10 @@ class Graph
         $node = $this->client->makeNode();
         $node->setProperty('uuid', $this->generator->generate());
 
+        $properties = $this->sanitize($properties);
+
         foreach ($properties as $property => $value) {
-            $node->setProperty(strtolower($property), $value);
+            $node->setProperty($property, $value);
         }
 
         $event = new NodeEvent($node, $labels, $properties);
@@ -216,6 +218,8 @@ class Graph
             }
         }
 
+        $properties = $this->sanitize($properties);
+
         foreach ($properties as $property => $value) {
             $node->setProperty($property, $value);
         }
@@ -244,5 +248,33 @@ class Graph
         ]);
 
         return $node;
+    }
+
+    /**
+     * Sanitize properties (helpful in case of arrays)
+     *
+     * @param array $properties
+     *
+     * @return array
+     */
+
+    protected function sanitize(array $properties)
+    {
+        $data = [];
+
+        foreach ($properties as $property => $value) {
+            $property = strtolower((string) $property);
+
+            if (is_array($value)) {
+                foreach ($value as $key => $value) {
+                    $key = (string) $key;
+                    $data[$property.'.'.$key] = $value;
+                }
+            } else {
+                $data[$property] = $value;
+            }
+        }
+
+        return $data;
     }
 }

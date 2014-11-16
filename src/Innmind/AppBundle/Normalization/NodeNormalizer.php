@@ -16,7 +16,21 @@ class NodeNormalizer implements NormalizerInterface
         $data = [];
 
         foreach ($node->getProperties() as $property => $value) {
-            $data[$property] = $value;
+            if (preg_match('/^.*\..*$/', $property)) {
+                list($parent, $child) = explode('.', $property, 2);
+
+                if (!isset($data[$parent])) {
+                    $data[$parent] = [];
+                }
+
+                if (is_numeric($child)) {
+                    $child = (int) $child;
+                }
+
+                $data[$parent][$child] = $value;
+            } else {
+                $data[$property] = $value;
+            }
         }
 
         $data['labels'] = [];
