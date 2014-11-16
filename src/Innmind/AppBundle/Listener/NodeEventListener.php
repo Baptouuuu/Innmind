@@ -103,6 +103,7 @@ class NodeEventListener
             foreach ($toCrawl as $link) {
                 $token = new ResourceToken;
                 $token
+                    ->setUri($link)
                     ->setUuid($this->uuid->generate())
                     ->setReferer($node->getProperty('uri'));
 
