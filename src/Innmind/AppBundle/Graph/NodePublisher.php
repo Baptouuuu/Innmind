@@ -54,12 +54,12 @@ class NodePublisher
 
         if ($uuid === null) {
             try {
-                $existing = $this->graph->getNodeByProperty(
+                $node = $this->graph->getNodeByProperty(
                     'uri',
                     $request->get('uri')
                 );
                 $this->graph->updateNode(
-                    $existing->getProperty('uuid'),
+                    $node->getProperty('uuid'),
                     $labels,
                     $request->all()
                 );
