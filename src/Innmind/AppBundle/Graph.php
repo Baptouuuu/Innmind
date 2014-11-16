@@ -94,6 +94,10 @@ class Graph
         }
 
         $node->addLabels($l);
+        $node->setProperty(
+            'updated_at',
+            (new \DateTime)->format(\DateTime::W3C)
+        );
         $node->save();
 
         $this->dispatcher->dispatch(NodeEvents::POST_CREATE, $event);
@@ -226,6 +230,10 @@ class Graph
         $event = new NodeEvent($node, $labels, $properties);
         $this->dispatcher->dispatch(NodeEvents::PRE_UPDATE, $event);
 
+        $node->setProperty(
+            'updated_at',
+            (new \DateTime)->format(\DateTime::W3C)
+        );
         $node->save();
 
         $this->dispatcher->dispatch(NodeEvents::POST_UPDATE, $event);
