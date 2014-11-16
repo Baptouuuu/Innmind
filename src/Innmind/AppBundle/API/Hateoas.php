@@ -50,7 +50,8 @@ class Hateoas
                     'rel' => $relation['type'],
                     'href' => $this->generator->generate(
                         'api_node_get',
-                        $relation['endNode']
+                        $relation['endNode'],
+                        UrlGeneratorInterface::ABSOLUTE_URL
                     )
                 ];
             }
