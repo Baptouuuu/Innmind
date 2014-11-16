@@ -9,6 +9,30 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class NodeController extends Controller
 {
     /**
+     * Expose al the properties of a node
+     */
+
+    public function getAction($uuid)
+    {
+        $node = $this->get('graph')->getNodeByUUID($uuid);
+
+        $response = new JsonResponse(
+            $this
+                ->get('node.normalizer')
+                ->normalize($node)
+        );
+
+        if (isset($node->{'last-modified'})) {
+            $response->headers->set('Last-Modified', $node->getProperty('last-modified'));
+        }
+
+        return $response
+            ->setPublic()
+            ->setMaxAge(24*3600)
+            ->setSharedMaxAge(24*3600);
+    }
+
+    /**
      * Add a new resource to the graph
      */
 
@@ -46,7 +70,6 @@ class NodeController extends Controller
 
     /**
      * Update an already exisiting node from the graph
-     *
      */
 
     public function updateAction(Request $request, $uuid)
