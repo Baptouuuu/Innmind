@@ -4,6 +4,8 @@ namespace Innmind\AppBundle\Graph;
 
 class NodeEvents
 {
-    const PRE_SAVE = 'graph.node.pre_save';
-    const POST_SAVE = 'graph.node.post_save';
+    const PRE_CREATE = 'graph.node.pre_create';
+    const POST_CREATE = 'graph.node.post_create';
+    const PRE_UPDATE = 'graph.node.pre_update';
+    const POST_UPDATE = 'graph.node.post_update';
 }

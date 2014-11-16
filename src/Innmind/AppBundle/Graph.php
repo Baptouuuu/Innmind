@@ -71,7 +71,7 @@ class Graph
         }
 
         $event = new NodeEvent($node, $labels, $properties);
-        $this->dispatcher->dispatch(NodeEvents::PRE_SAVE, $event);
+        $this->dispatcher->dispatch(NodeEvents::PRE_CREATE, $event);
 
         $node->save();
 
@@ -83,7 +83,7 @@ class Graph
         $node->addLabels($l);
         $node->save();
 
-        $this->dispatcher->dispatch(NodeEvents::POST_SAVE, $event);
+        $this->dispatcher->dispatch(NodeEvents::POST_CREATE, $event);
 
         return $node;
     }
@@ -200,11 +200,11 @@ class Graph
         $node->addLabels($l);
 
         $event = new NodeEvent($node, $labels, $properties);
-        $this->dispatcher->dispatch(NodeEvents::PRE_SAVE, $event);
+        $this->dispatcher->dispatch(NodeEvents::PRE_UPDATE, $event);
 
         $node->save();
 
-        $this->dispatcher->dispatch(NodeEvents::POST_SAVE, $event);
+        $this->dispatcher->dispatch(NodeEvents::POST_UPDATE, $event);
 
         return $node;
     }
