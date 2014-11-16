@@ -32,6 +32,7 @@ services:
         calls:
             - ['setClient', ['@neo4j_client']]
             - ['setGenerator', ['@uuid']]
+            - ['setDispatcher', ['@event_dispatcher']]
 
     node_normalizer:
         class: Innmind\AppBundle\Normalization\NodeNormalizer

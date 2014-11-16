@@ -7,13 +7,17 @@ use Everyman\Neo4j\Relationship;
 use Everyman\Neo4j\Client;
 use Everyman\Neo4j\Cypher\Query;
 use Everyman\Neo4j\Query\ResultSet;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Innmind\AppBundle\Graph\Exception\ZeroNodeFoundException;
 use Innmind\AppBundle\Graph\Exception\MoreThanOneNodeFoundException;
+use Innmind\AppBundle\Graph\NodeEvents;
+use Innmind\AppBundle\Graph\NodeEvent;
 
 class Graph
 {
     protected $client;
     protected $generator;
+    protected $dispatcher;
 
     /**
      * Set the neo4j client
@@ -35,6 +39,17 @@ class Graph
     public function setGenerator(UUID $generator)
     {
         $this->generator = $generator;
+    }
+
+    /**
+     * Set the event dispatcher
+     *
+     * @param EventDispatcherInterface $dispatcher
+     */
+
+    public function setDispatcher(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -78,6 +93,9 @@ class Graph
             $node->setProperty(strtolower($property), $value);
         }
 
+        $event = new NodeEvent($node, $labels, $properties);
+        $this->dispatcher->dispatch(NodeEvents::PRE_SAVE, $event);
+
         $node->save();
 
         $l = [];
@@ -87,6 +105,8 @@ class Graph
 
         $node->addLabels($l);
         $node->save();
+
+        $this->dispatcher->dispatch(NodeEvents::POST_SAVE, $event);
 
         return $node;
     }
