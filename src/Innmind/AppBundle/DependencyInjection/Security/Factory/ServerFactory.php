@@ -21,7 +21,7 @@ class ServerFactory implements SecurityFactoryInterface
             ->replaceArgument(0, new Reference($userProvider));
 
         $listenerId = 'security.authentication.listener.server.'.$id;
-        $listener = $container->setDefinition(
+        $container->setDefinition(
             $listenerId,
             new DefinitionDecorator('server.security.authentication.listener')
         );
