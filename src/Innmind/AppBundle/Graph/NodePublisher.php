@@ -83,7 +83,7 @@ class NodePublisher
                 $referer
             );
 
-            $relations = $referer->getRelations();
+            $relations = $referer->getRelationships();
             $hasRelation = false;
 
             foreach ($relations as $relation) {
