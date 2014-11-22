@@ -108,7 +108,6 @@ class NodeEventListener
                     ->setReferer($node->getProperty('uri'));
 
                 $this->em->persist($token);
-                $this->em->flush();
 
                 $data = [
                     'uri' => $link,
@@ -141,6 +140,8 @@ class NodeEventListener
 
                 $crawler->publish(serialize($data));
             }
+
+            $this->em->flush();
         }
     }
 }
