@@ -102,17 +102,6 @@ class NodeEventListener
             }
 
             foreach ($toCrawl as $link) {
-                $token = $this->em
-                    ->getRepository('InnmindAppBundle:ResourceToken')
-                    ->findOneBy([
-                        'uri' => $link,
-                        'referer' => $node->getProperty('uri'),
-                    ]);
-
-                if (!empty($token)) {
-                    continue;
-                }
-
                 $token = new ResourceToken;
                 $token
                     ->setUri($link)
