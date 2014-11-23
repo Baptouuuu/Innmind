@@ -266,15 +266,41 @@ class Graph
             $property = strtolower((string) $property);
 
             if (is_array($value)) {
-                foreach ($value as $key => $value) {
-                    $key = (string) $key;
-                    $data[$property.'.'.$key] = $value;
-                }
+                $data = array_merge(
+                    $data,
+                    $this->flattenArray($property, $value)
+                );
             } else {
                 $data[$property] = $value;
             }
         }
 
         return $data;
+    }
+
+    /**
+     * Flatten a structure of arrays to a simple key/value pair
+     *
+     * @param string $property Root key
+     * @param array $data
+     *
+     * @return array
+     */
+
+    protected function flattenArray($property, array $data)
+    {
+        $flatten = [];
+
+        foreach ($data as $key => $value) {
+            $key = $property.'.'.$key;
+
+            if (is_array($value)) {
+                $flatten = array_merge($flatten, $this->flattenArray($key, $value));
+            } else {
+                $flatten[$key] = $value;
+            }
+        }
+
+        return $flatten;
     }
 }

@@ -7,6 +7,8 @@ use Everyman\Neo4j\Relationship;
 
 class NodeNormalizer implements NormalizerInterface
 {
+    const HIERARCHY_PATTERN = '/(\w+\.\w+\.?)+/';
+
     public function normalize($node)
     {
         if (!($node instanceof Node)) {
@@ -16,22 +18,17 @@ class NodeNormalizer implements NormalizerInterface
         $data = [];
 
         foreach ($node->getProperties() as $property => $value) {
-            if (preg_match('/^.*\..*$/', $property)) {
-                list($parent, $child) = explode('.', $property, 2);
-
-                if (!isset($data[$parent])) {
-                    $data[$parent] = [];
-                }
-
-                if (is_numeric($child)) {
-                    $child = (int) $child;
-                }
-
-                $data[$parent][$child] = $value;
+            if ((bool) preg_match(self::HIERARCHY_PATTERN, $property)) {
+                $data = array_replace_recursive(
+                    $data,
+                    $this->expand($property, $value)
+                );
             } else {
                 $data[$property] = $value;
             }
         }
+
+        $data = $this->cleanIndexes($data);
 
         $data['labels'] = [];
 
@@ -58,6 +55,66 @@ class NodeNormalizer implements NormalizerInterface
             }
 
             $data['relations'][] = $r;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Transform dotted property into an array structure
+     *
+     * @param string $property
+     * @param mixed $value
+     *
+     * @return array
+     */
+
+    protected function expand($string, $value)
+    {
+        $data = [];
+
+        list($parent, $child) = explode('.', $string, 2);
+
+        $data[$parent] = [];
+
+        if ((bool) preg_match(self::HIERARCHY_PATTERN, $child)) {
+            $data[$parent] = array_replace(
+                $data[$parent],
+                $this->expand($child, $value)
+            );
+        } else {
+            if (is_numeric($child)) {
+                $child = (int) $child;
+            }
+
+            $data[$parent][$child] = $value;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Prevent interpreting numerical indexes as string key
+     *
+     * @param array $data
+     */
+
+    protected function cleanIndexes(array $data)
+    {
+        $numerical = true;
+
+        foreach ($data as $key => &$value) {
+            if (!is_numeric($key)) {
+                $numerical = false;
+            }
+
+            if (is_array($value)) {
+                $value = $this->cleanIndexes($value);
+            }
+        }
+
+        if ($numerical === true) {
+            $data = array_values($data);
         }
 
         return $data;
