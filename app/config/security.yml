@@ -7,10 +7,6 @@ security:
             id: server_provider
 
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-
         publication:
             pattern: ^/api/publish.*
             stateless: true
@@ -21,6 +17,10 @@ security:
             pattern: ^/
             stateless: true
             anonymous: ~
+
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
 
     access_control:
         - { path: ^/api/publish.*, roles: [ROLE_WORKER, ROLE_CRAWLER] }
