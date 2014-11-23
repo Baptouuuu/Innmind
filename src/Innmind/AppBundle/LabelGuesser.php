@@ -23,6 +23,9 @@ class LabelGuesser
             case $request->has('title') && $request->has('content'):
                 $labels = ['Document'];
                 break;
+            case $request->has('content-type') && (bool) preg_match('/image\/*/', $request->get('content-type')):
+                $labels = ['Image'];
+                break;
         }
 
         array_unshift($labels, 'Resource');
