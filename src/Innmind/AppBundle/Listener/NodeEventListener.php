@@ -94,7 +94,8 @@ class NodeEventListener
             foreach ($node->getProperties() as $property => $value) {
                 if (
                     substr($property, 0, 5) === 'links' ||
-                    substr($property, 0, 12) === 'translations'
+                    substr($property, 0, 12) === 'translations' ||
+                    (bool) preg_match('/^images.*uri$/', $property)
                 ) {
                     $toCrawl[] = $value;
                 }
