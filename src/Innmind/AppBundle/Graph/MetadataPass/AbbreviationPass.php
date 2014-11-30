@@ -43,7 +43,7 @@ class AbbreviationPass implements MetadataPassInterface
 
         foreach ($abbrs as $abbr => $desc) {
             try {
-                $node = $this->graph->query(
+                $result = $this->graph->query(
                     'MATCH (n:Abbreviation) WHERE n.abbreviation = {abbr} and n.description = {desc} RETURN n;',
                     [
                         'abbr' => $abbr,
@@ -51,11 +51,13 @@ class AbbreviationPass implements MetadataPassInterface
                     ]
                 );
 
-                if ($node->count() === 0) {
+                if ($result->count() === 0) {
                     throw new ZeroNodeFoundException;
+                } else {
+                    $abbr = $result[0]['n'];
                 }
             } catch (ZeroNodeFoundException $e) {
-                $node = $this->graph->createNode(
+                $abbr = $this->graph->createNode(
                     ['Abbreviation'],
                     [
                         'abbreviation' => $abbr,
@@ -64,19 +66,24 @@ class AbbreviationPass implements MetadataPassInterface
                 );
             }
 
-            $abbrNodes[$node->getId()] = $node;
+            $abbrNodes[$abbr->getId()] = $abbr;
         }
 
         $relations = $node->getRelationships(NodeRelations::CONTAINS);
+        $relationNodes = [];
 
         foreach ($relations as $rel) {
-            $endNodeId = $rel->getEndNode()->getId();
+            $endNode = $rel->getEndNode();
 
-            if (!isset($abbrNodes[$endNodeId])) {
+            $relationNodes[$endNode->getId()] = $endNode;
+        }
+
+        foreach ($abbrNodes as $abbr) {
+            if (!isset($relationNodes[$abbr->getId()])) {
                 $this->graph
                     ->createRelation(
                         $node,
-                        $abbrNodes[$endNodeId]
+                        $abbr
                     )
                     ->setType(NodeRelations::CONTAINS)
                     ->save();

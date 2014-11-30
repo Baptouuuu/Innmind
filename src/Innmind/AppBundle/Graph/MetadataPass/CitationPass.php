@@ -43,34 +43,41 @@ class CitationPass implements MetadataPassInterface
 
         foreach ($citations as $cite) {
             try {
-                $node = $this->graph->query(
+                $result = $this->graph->query(
                     'MATCH (n:Citation) WHERE n.content = {cite} RETURN n;',
                     ['cite' => $cite]
                 );
 
-                if ($node->count() === 0) {
+                if ($result->count() === 0) {
                     throw new ZeroNodeFoundException;
+                } else {
+                    $cite = $result[0]['n'];
                 }
             } catch (ZeroNodeFoundException $e) {
-                $node = $this->graph->createNode(
+                $cite = $this->graph->createNode(
                     ['Citation'],
                     ['content' => $cite]
                 );
             }
 
-            $citationNodes[$node->getId()] = $node;
+            $citationNodes[$cite->getId()] = $cite;
         }
 
         $relations = $node->getRelationships(NodeRelations::CONTAINS);
+        $relationNodes = [];
 
         foreach ($relations as $rel) {
-            $endNodeId = $rel->getEndNode()->getId();
+            $endNode = $rel->getEndNode();
 
-            if (!isset($citationNodes[$endNodeId])) {
+            $relationNodes[$endNode->getId()] = $endNode;
+        }
+
+        foreach ($citationNodes as $cite) {
+            if (!isset($relationNodes[$cite->getId()])) {
                 $this->graph
                     ->createRelation(
                         $node,
-                        $citationNodes[$endNodeId]
+                        $cite
                     )
                     ->setType(NodeRelations::CONTAINS)
                     ->save();
