@@ -6,6 +6,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Innmind\AppBundle\DependencyInjection\Security\Factory\ServerFactory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Innmind\AppBundle\DependencyInjection\Compiler\RabbitMQPass;
+use Innmind\AppBundle\DependencyInjection\Compiler\GraphMetadataPass;
 
 class InnmindAppBundle extends Bundle
 {
@@ -17,5 +18,6 @@ class InnmindAppBundle extends Bundle
         $extension->addSecurityListenerFactory(new ServerFactory);
 
         $container->addCompilerPass(new RabbitMQPass);
+        $container->addCompilerPass(new GraphMetadataPass);
     }
 }

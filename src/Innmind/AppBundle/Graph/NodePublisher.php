@@ -15,6 +15,7 @@ class NodePublisher
 {
     protected $graph;
     protected $labelGuesser;
+    protected $metadata;
 
     /**
      * Set the graph wrapper
@@ -36,6 +37,17 @@ class NodePublisher
     public function setLabelGuesser(LabelGuesser $guesser)
     {
         $this->labelGuesser = $guesser;
+    }
+
+    /**
+     * Set an helper to compute all metadata around a node
+     *
+     * @param Metadata $metadata
+     */
+
+    public function setMetadata(Metadata $metadata)
+    {
+        $this->metadata = $metadata;
     }
 
     /**
@@ -76,6 +88,12 @@ class NodePublisher
                 $request->all()
             );
         }
+
+        $this->metadata->compute(
+            $node,
+            $request,
+            $referer
+        );
 
         if ($referer !== null) {
             $referer = $this->graph->getNodeByProperty(
