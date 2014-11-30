@@ -10,4 +10,5 @@ class NodeRelations
 {
     const REFERER = 'REFER';
     const TRANSLATE = 'TRANSLATE';
+    const CONTAINS = 'CONTAINS';
 }

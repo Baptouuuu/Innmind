@@ -1,7 +1,23 @@
 services:
-    metadata.pass.translation:
-        class: Innmid\AppBundle\Graph\MetadataPass\TranslationPass
+    metadata.pass:
+        abstract: true
         calls:
             - ['setGraph', ['@graph']]
+
+    metadata.pass.translation:
+        class: Innmind\AppBundle\Graph\MetadataPass\TranslationPass
+        parent: metadata.pass
+        tags:
+            - { name: graph.metadata }
+
+    metadata.pass.abbreviation:
+        class: Innmind\AppBundle\Graph\MetadataPass\AbbreviationPass
+        parent: metadata.pass
+        tags:
+            - { name: graph.metadata }
+
+    metadata.pass.citation:
+        class: Innmind\AppBundle\Graph\MetadataPass\CitationPass
+        parent: metadata.pass
         tags:
             - { name: graph.metadata }
