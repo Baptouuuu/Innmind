@@ -4,12 +4,13 @@ api_node_get:
     requirements:
         uuid: '\w{8}-(\w{4}-){3}\w{12}'
     methods: [GET]
+    condition: "request.headers.get('Accept') === 'application/vnd.innmind.v1+json'"
 
 api_node_create:
     path:     /api/node/
     defaults: { _controller: InnmindAppBundle:API/Node:create }
     methods: [POST]
-    condition: "request.headers.has('X-Token') and request.headers.has('X-Resource')"
+    condition: "request.headers.has('X-Token') and request.headers.has('X-Resource') and request.headers.get('Accept') === 'application/vnd.innmind.v1+json'"
 
 api_node_update:
     path:     /api/node/{uuid}
@@ -17,4 +18,4 @@ api_node_update:
     requirements:
         uuid: '\w{8}-(\w{4}-){3}\w{12}'
     methods: [PUT]
-    condition: "request.headers.has('X-Token') and request.headers.has('X-Resource')"
+    condition: "request.headers.has('X-Token') and request.headers.has('X-Resource') and request.headers.get('Accept') === 'application/vnd.innmind.v1+json'"
