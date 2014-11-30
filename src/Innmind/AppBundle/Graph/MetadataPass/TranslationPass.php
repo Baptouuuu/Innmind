@@ -58,7 +58,7 @@ class TranslationPass implements MetadataPassInterface
         foreach ($relations as $rel) {
             if (
                 $rel->getProperty('language') === $data->get('language') &&
-                $rel->getEndNode() === $referer
+                $rel->getEndNode()->getId() === $referer->getId()
             ) {
                 return;
             }
