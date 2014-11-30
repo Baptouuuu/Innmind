@@ -1,0 +1,7 @@
+services:
+    metadata.pass.translation:
+        class: Innmid\AppBundle\Graph\MetadataPass\TranslationPass
+        calls:
+            - ['setGraph', ['@graph']]
+        tags:
+            - { name: graph.metadata }

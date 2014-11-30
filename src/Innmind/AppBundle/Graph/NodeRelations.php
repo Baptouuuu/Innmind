@@ -9,4 +9,5 @@ namespace Innmind\AppBundle\Graph;
 class NodeRelations
 {
     const REFERER = 'REFER';
+    const TRANSLATE = 'TRANSLATE';
 }
