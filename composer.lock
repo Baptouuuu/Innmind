@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0ac42415977651704fd47b014a51effb",
+    "hash": "d6cfc4ae0c9a5039819520df9766b2b9",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1454,16 +1454,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.6.0-BETA1",
+            "version": "v2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "7bd1d4c0e68e9e2fd9e19c8e5671f71e82a4dc73"
+                "reference": "645bb3248db50d653d18929eb0c92b131b4f35ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/7bd1d4c0e68e9e2fd9e19c8e5671f71e82a4dc73",
-                "reference": "7bd1d4c0e68e9e2fd9e19c8e5671f71e82a4dc73",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/645bb3248db50d653d18929eb0c92b131b4f35ad",
+                "reference": "645bb3248db50d653d18929eb0c92b131b4f35ad",
                 "shasum": ""
             },
             "require": {
@@ -1527,7 +1527,7 @@
                 "ircmaxell/password-compat": "1.0.*",
                 "monolog/monolog": "~1.11",
                 "ocramius/proxy-manager": ">=0.3.1,<0.6-dev",
-                "propel/propel1": "1.6.*"
+                "propel/propel1": "~1.6"
             },
             "type": "library",
             "extra": {
@@ -1566,7 +1566,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2014-11-03 20:15:26"
+            "time": "2014-11-28 15:59:01"
         },
         {
             "name": "twig/extensions",
@@ -1780,7 +1780,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "symfony/symfony": 10,
         "everyman/neo4jphp": 20
     },
     "prefer-stable": false,
