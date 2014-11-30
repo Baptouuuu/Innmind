@@ -5,7 +5,9 @@ namespace Innmind\AppBundle\Controller\API;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Innmind\AppBundle\Graph\Exception\ZeroNodeFoundException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class NodeController extends Controller
 {
@@ -72,7 +74,15 @@ class NodeController extends Controller
         return new JsonResponse(
             $this
                 ->get('node.normalizer')
-                ->normalize($node)
+                ->normalize($node),
+            Response::HTTP_CREATED,
+            [
+                'Location' => $this->generateUrl(
+                    'api_node_get',
+                    ['uuid' => $node->getProperty('uuid')],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
+            ]
         );
     }
 
@@ -106,10 +116,6 @@ class NodeController extends Controller
 
         $provider->clearToken();
 
-        return new JsonResponse(
-            $this
-                ->get('node.normalizer')
-                ->normalize($node)
-        );
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 }
