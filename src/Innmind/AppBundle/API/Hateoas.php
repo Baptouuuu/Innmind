@@ -48,7 +48,7 @@ class Hateoas
         foreach ($node['relations'] as $relation) {
             if ($relation['direction'] === Relationship::DirectionOut) {
                 $links[] = [
-                    'rel' => $relation['type'],
+                    'rel' => strtolower($relation['type']),
                     'href' => $this->generator->generate(
                         'api_node_get',
                         ['uuid' => $relation['endNode']],
