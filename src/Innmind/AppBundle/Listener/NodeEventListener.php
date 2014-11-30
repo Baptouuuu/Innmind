@@ -9,6 +9,7 @@ use Innmind\AppBundle\Graph;
 use Innmind\AppBundle\Entity\ResourceToken;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 
 class NodeEventListener
 {
@@ -17,6 +18,7 @@ class NodeEventListener
     protected $em;
     protected $graph;
     protected $url;
+    protected $toCrawl = [];
 
     /**
      * Set the rabbit mq wrapper
@@ -83,47 +85,71 @@ class NodeEventListener
     {
         $node = $event->getNode();
 
-        if ($this->rabbit->hasProducer('worker.crawler')) {
-            $crawler = $this->rabbit->getProducer('worker.crawler');
-            $toCrawl = [];
+        if (!$this->rabbit->hasProducer('worker.crawler')) {
+            return;
+        }
 
-            if (isset($node->canonical)) {
-                $toCrawl[] = $node->getProperty('canonical');
+        $crawler = $this->rabbit->getProducer('worker.crawler');
+        $uris = [];
+
+        if (isset($node->canonical)) {
+            $uris[] = $node->getProperty('canonical');
+        }
+
+        foreach ($node->getProperties() as $property => $value) {
+            if (
+                substr($property, 0, 5) === 'links' ||
+                substr($property, 0, 12) === 'translations' ||
+                (bool) preg_match('/^images.*uri$/', $property)
+            ) {
+                $uris[] = $value;
             }
+        }
 
-            foreach ($node->getProperties() as $property => $value) {
-                if (
-                    substr($property, 0, 5) === 'links' ||
-                    substr($property, 0, 12) === 'translations' ||
-                    (bool) preg_match('/^images.*uri$/', $property)
-                ) {
-                    $toCrawl[] = $value;
-                }
-            }
+        $this->toCrawl[] = [
+            'uris' => $uris,
+            'node' => $node,
+        ];
+    }
 
-            foreach ($toCrawl as $link) {
+    /**
+     * Send the amqp messages on kernel terminate
+     *
+     * @param PostResponseEvent $event
+     */
+
+    public function onKernelTerminate(PostResponseEvent $event)
+    {
+        if (!$this->rabbit->hasProducer('worker.crawler')) {
+            return;
+        }
+
+        $crawler = $this->rabbit->getProducer('worker.crawler');
+
+        foreach ($this->toCrawl as $resource) {
+            foreach ($resource['uris'] as $uri) {
                 $token = new ResourceToken;
                 $token
-                    ->setUri($link)
+                    ->setUri($uri)
                     ->setUuid($this->uuid->generate())
-                    ->setReferer($node->getProperty('uri'));
+                    ->setReferer($resource['node']->getProperty('uri'));
 
                 $this->em->persist($token);
 
                 $data = [
-                    'uri' => $link,
-                    'referer' => $node->getProperty('uri'),
+                    'uri' => $uri,
+                    'referer' => $resource['node']->getProperty('uri'),
                     'token' => $token->getUuid(),
                 ];
 
-                if (isset($node->language)) {
-                    $data['language'] = $node->getProperty('language');
+                if (isset($resource['node']->language)) {
+                    $data['language'] = $resource['node']->getProperty('language');
                 }
 
                 try {
                     $existingNode = $this->graph->getNodeByProperty(
                         'uri',
-                        $link
+                        $uri
                     );
                     $data['uuid'] = $existingNode->getProperty('uuid');
                     $data['publisher'] = $this->url->generate(
@@ -141,8 +167,8 @@ class NodeEventListener
 
                 $crawler->publish(serialize($data));
             }
-
-            $this->em->flush();
         }
+
+        $this->em->flush();
     }
 }

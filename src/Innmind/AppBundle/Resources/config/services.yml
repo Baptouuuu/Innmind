@@ -62,3 +62,4 @@ services:
             - ['setUrlGenerator', ['@router']]
         tags:
             - { name: kernel.event_listener, event: graph.node.post_create, method: onPostCreate }
+            - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
