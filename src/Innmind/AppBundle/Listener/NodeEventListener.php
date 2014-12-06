@@ -216,7 +216,7 @@ class NodeEventListener
         $b = $this->domainParser->parseUrl($b);
 
         if (
-            $a->host === $b->host &&
+            (string) $a->host === (string) $b->host &&
             $a->port === $b->port &&
             $a->path === $b->path &&
             $a->query === $b->query
