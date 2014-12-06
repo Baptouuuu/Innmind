@@ -71,10 +71,8 @@ class NodeController extends Controller
 
         $provider->clearToken();
 
-        return new JsonResponse(
-            $this
-                ->get('node.normalizer')
-                ->normalize($node),
+        return new Response(
+            '',
             Response::HTTP_CREATED,
             [
                 'Location' => $this->generateUrl(
