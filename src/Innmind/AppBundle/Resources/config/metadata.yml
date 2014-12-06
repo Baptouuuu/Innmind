@@ -21,3 +21,9 @@ services:
         parent: metadata.pass
         tags:
             - { name: graph.metadata }
+
+    metadata.pass.host:
+        class: Innmind\AppBundle\Graph\MetadataPass\HostPass
+        parent: metadata.pass
+        tags:
+            - { name: graph.metadata }
