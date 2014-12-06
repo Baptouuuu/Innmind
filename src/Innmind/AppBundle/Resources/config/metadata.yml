@@ -27,3 +27,9 @@ services:
         parent: metadata.pass
         tags:
             - { name: graph.metadata }
+
+    metadata.pass.canonical:
+        class: Innmind\AppBundle\Graph\MetadataPass\CanonicalPass
+        parent: metadata.pass
+        tags:
+            - { name: graph.metadata }

@@ -12,4 +12,5 @@ class NodeRelations
     const TRANSLATE = 'TRANSLATE';
     const CONTAINS = 'CONTAINS';
     const BELONGS_TO = 'BELONGS_TO';
+    const CANONICAL = 'CANONICAL';
 }
