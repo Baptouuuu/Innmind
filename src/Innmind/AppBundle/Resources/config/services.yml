@@ -61,9 +61,15 @@ services:
             - ['setEntityManager', ['@doctrine.orm.entity_manager']]
             - ['setGraph', ['@graph']]
             - ['setUrlGenerator', ['@router']]
+            - ['setDomainParser', ['@domain_parser']]
         tags:
             - { name: kernel.event_listener, event: graph.node.post_create, method: onPostCreate }
             - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
 
     graph.metadata:
         class: Innmind\AppBundle\Graph\Metadata
+
+    domain_parser:
+        class: Pdp\Parser
+        factory_class: Innmind\AppBundle\DomainParserFactory
+        factory_method: make

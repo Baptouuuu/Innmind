@@ -10,6 +10,7 @@ use Innmind\AppBundle\Entity\ResourceToken;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Pdp\Parser;
 
 class NodeEventListener
 {
@@ -17,6 +18,7 @@ class NodeEventListener
     protected $uuid;
     protected $em;
     protected $graph;
+    protected $domainParser;
     protected $url;
     protected $toCrawl = [];
 
@@ -76,6 +78,17 @@ class NodeEventListener
     }
 
     /**
+     * Set a domain parser
+     *
+     * @param Pdp\Parser $parser
+     */
+
+    public function setDomainParser(Parser $parser)
+    {
+        $this->domainParser = $parser;
+    }
+
+    /**
      * Send messages to rabbit to crawl refered resources
      *
      * @param NodeEvent $event
@@ -96,11 +109,16 @@ class NodeEventListener
             $uris[] = $node->getProperty('canonical');
         }
 
+        $uri = $node->getProperty('uri');
+
         foreach ($node->getProperties() as $property => $value) {
             if (
-                substr($property, 0, 5) === 'links' ||
-                substr($property, 0, 12) === 'translations' ||
-                (bool) preg_match('/^images.*uri$/', $property)
+                (
+                    substr($property, 0, 5) === 'links' ||
+                    substr($property, 0, 12) === 'translations' ||
+                    (bool) preg_match('/^images.*uri$/', $property)
+                ) &&
+                !$this->isSameResources($value, $uri)
             ) {
                 $uris[] = $value;
             }
@@ -181,5 +199,31 @@ class NodeEventListener
         }
 
         $this->em->flush();
+    }
+
+    /**
+     * Check if both uris represent the same resource
+     *
+     * @param string $a
+     * @param string $b
+     *
+     * @return bool
+     */
+
+    protected function isSameResources($a, $b)
+    {
+        $a = $this->domainParser->parseUrl($a);
+        $b = $this->domainParser->parseUrl($b);
+
+        if (
+            $a->host === $b->host &&
+            $a->port === $b->port &&
+            $a->path === $b->path &&
+            $a->query === $b->query
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }
