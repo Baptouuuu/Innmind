@@ -33,18 +33,17 @@ class HostPass implements MetadataPassInterface
 
     public function process(Node $node, ParameterBag $data, $referer)
     {
-        $host = $data->get('domain').'.'.$data->get('tld');
+        $domain = $data->get('domain');
 
         $hostNode = $this->graph->query(
             'MATCH (n:Host) WHERE n.domain = {domain} RETURN n;',
-            ['host' => $host]
+            ['domain' => $domain]
         );
 
         if ($hostNode->count() === 0) {
             $host = $this->graph->createNode(
                 ['Host'],
                 [
-                    'host' => $host,
                     'domain' => $data->get('domain'),
                     'tld' => $data->get('tld'),
                 ]
