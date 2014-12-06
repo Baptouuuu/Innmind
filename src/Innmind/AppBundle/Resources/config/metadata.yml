@@ -28,8 +28,8 @@ services:
         tags:
             - { name: graph.metadata }
 
-    metadata.pass.canonical:
-        class: Innmind\AppBundle\Graph\MetadataPass\CanonicalPass
+    metadata.pass.canonical_link:
+        class: Innmind\AppBundle\Graph\MetadataPass\CanonicalLinkPass
         parent: metadata.pass
         tags:
             - { name: graph.metadata }
