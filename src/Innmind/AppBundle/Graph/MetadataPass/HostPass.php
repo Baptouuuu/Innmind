@@ -35,12 +35,12 @@ class HostPass implements MetadataPassInterface
     {
         $domain = $data->get('domain');
 
-        $hostNode = $this->graph->query(
+        $result = $this->graph->query(
             'MATCH (n:Host) WHERE n.domain = {domain} RETURN n;',
             ['domain' => $domain]
         );
 
-        if ($hostNode->count() === 0) {
+        if ($result->count() === 0) {
             $host = $this->graph->createNode(
                 ['Host'],
                 [
@@ -48,15 +48,17 @@ class HostPass implements MetadataPassInterface
                     'tld' => $data->get('tld'),
                 ]
             );
-
-            $relation = $this->graph->createRelation(
-                $node,
-                $host
-            );
-
-            $relation
-                ->setType(NodeRelations::BELONGS_TO)
-                ->save();
+        } else {
+            $host = $result[0]['n'];
         }
+
+        $relation = $this->graph->createRelation(
+            $node,
+            $host
+        );
+
+        $relation
+            ->setType(NodeRelations::BELONGS_TO)
+            ->save();
     }
 }
