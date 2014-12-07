@@ -73,3 +73,12 @@ services:
         class: Pdp\Parser
         factory_class: Innmind\AppBundle\DomainParserFactory
         factory_method: make
+
+    http_client:
+        class: GuzzleHttp\Client
+
+    innmind_analyzer:
+        class: Innmind\AppBundle\InnmindAnalyzer
+        calls:
+            - ['setHttpClient', ['@http_client']]
+            - ['setUrlGenerator', ['@router']]
