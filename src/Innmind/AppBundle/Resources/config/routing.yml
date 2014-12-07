@@ -19,3 +19,9 @@ api_node_update:
         uuid: '\w{8}-(\w{4}-){3}\w{12}'
     methods: [PUT]
     condition: "request.headers.has('X-Token') and request.headers.has('X-Resource') and request.headers.get('Accept') === 'application/vnd.innmind.v1+json'"
+
+api_info:
+    path: /api/info
+    defaults: { _controller: InnmindAppBundle:API/Info:index }
+    methods: [GET]
+    condition: "request.headers.get('Accept') === 'application/json'"

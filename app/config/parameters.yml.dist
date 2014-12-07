@@ -28,3 +28,6 @@ parameters:
     rabbitmq_password: guest
 
     router.request_context.host: innmind.io
+
+    api.version.current: 1
+    api.versions: [1]
