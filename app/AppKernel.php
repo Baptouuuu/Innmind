@@ -47,7 +47,7 @@ class AppKernel extends Kernel
     public function getLogDir()
     {
         if (getenv('DOCKER') === 'true') {
-            return '/tmp/log';
+            return '/tmp/logs';
         }
 
         return parent::getLogDir();
