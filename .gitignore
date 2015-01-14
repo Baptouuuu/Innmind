@@ -23,3 +23,6 @@ node_modules
 
 # doctrine
 *.php~
+
+# junk
+.DS_Store
